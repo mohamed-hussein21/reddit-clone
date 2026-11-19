@@ -1,0 +1,22 @@
+/* Reddit-like design tokens */
+:root {
+  --color-primary: #ff4500;   /* reddit orange */
+  --color-upvote: #ff4500;
+  --color-downvote: #7193ff;
+  --color-blue: #0079d3;
+  --color-bg: #dae0e6;
+  --color-card: #ffffff;
+  --color-border: #ccc;
+  --color-text: #1c1c1c;
+  --color-text-muted: #787c7e;
+  --radius: 4px;
+  --navbar-height: 48px;
+  --font: 'IBM Plex Sans', Arial, sans-serif;
+}
+[data-theme='dark'] {
+  --color-bg: #030303;
+  --color-card: #1a1a1b;
+  --color-border: #343536;
+  --color-text: #d7dadc;
+  --color-text-muted: #818384;
+}

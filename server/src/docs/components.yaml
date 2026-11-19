@@ -1,0 +1,7 @@
+# Shared schemas (User, Community, Post, Comment, Error...) referenced from the other yaml files
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message: { type: string }

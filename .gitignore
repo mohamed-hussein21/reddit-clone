@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+# env files (NEVER push secrets)
+.env
+.env.*
+!.env.example
+# builds
+dist/
+build/
+coverage/
+# uploads saved locally
+server/uploads/*
+!server/uploads/.gitkeep
+# logs / OS / editors
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/

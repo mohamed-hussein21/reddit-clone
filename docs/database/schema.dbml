@@ -1,0 +1,86 @@
+// Paste this into https://dbdiagram.io to generate the schema diagram (export PNG -> schema.png)
+Table users {
+  _id ObjectId [pk]
+  username string [unique]
+  email string [unique]
+  password string
+  displayName string
+  bio string
+  avatar string
+  banner string
+  karma int
+  createdAt datetime
+}
+Table communities {
+  _id ObjectId [pk]
+  name string [unique]
+  title string
+  description string
+  icon string
+  banner string
+  type string // public | restricted | private
+  creator ObjectId [ref: > users._id] // creator = moderator
+  membersCount int
+  createdAt datetime
+}
+Table memberships {
+  _id ObjectId [pk]
+  user ObjectId [ref: > users._id]
+  community ObjectId [ref: > communities._id]
+  role string // member | moderator
+  createdAt datetime
+  indexes { (user, community) [unique] }
+}
+Table posts {
+  _id ObjectId [pk]
+  title string
+  body string
+  type string // text | image | link
+  url string
+  image string
+  author ObjectId [ref: > users._id]
+  community ObjectId [ref: > communities._id]
+  score int
+  upvotes int
+  downvotes int
+  commentsCount int
+  isEdited bool
+  isRemoved bool // removed by moderator
+  isDeleted bool // deleted by author
+  aiSummary string
+  createdAt datetime
+}
+Table comments {
+  _id ObjectId [pk]
+  body string
+  author ObjectId [ref: > users._id]
+  post ObjectId [ref: > posts._id]
+  parent ObjectId [ref: > comments._id, null] // null = top level
+  depth int
+  score int
+  isEdited bool
+  isRemoved bool
+  isDeleted bool
+  createdAt datetime
+}
+Table votes {
+  _id ObjectId [pk]
+  user ObjectId [ref: > users._id]
+  target ObjectId // post or comment id
+  targetType string // Post | Comment
+  value int // 1 | -1
+  indexes { (user, target) [unique] }
+}
+Table conversations {
+  _id ObjectId [pk]
+  participants ObjectId[] [ref: <> users._id]
+  lastMessageAt datetime
+}
+Table messages {
+  _id ObjectId [pk]
+  conversation ObjectId [ref: > conversations._id]
+  sender ObjectId [ref: > users._id]
+  text string
+  readBy ObjectId[]
+  createdAt datetime
+}

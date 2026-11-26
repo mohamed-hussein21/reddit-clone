@@ -1,41 +1,59 @@
-import { request } from './auth.api';
+import api from './axios';
+import { handleApiError } from './auth.api';
 
 const API_URL =
-    import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-export function getProfile(username) {
-    return request('/users/' + encodeURIComponent(username));
+export async function getProfile(username) {
+  const response = await api.get(
+    '/users/' + encodeURIComponent(username)
+  ).catch(handleApiError);
+
+  return response.data;
 }
 
-export function updateProfile(displayName, bio) {
-    return request('/users/me', {
-        method: 'PATCH',
-        body: JSON.stringify({ displayName, bio })
-    });
+export async function updateProfile(displayName, bio) {
+  const response = await api.patch('/users/me', {
+    displayName,
+    bio
+  }).catch(handleApiError);
+
+  return response.data;
 }
 
-export function uploadAvatar(file) {
-    const formData = new FormData();
-    formData.append('avatar', file);
+export async function uploadAvatar(file) {
+  const formData = new FormData();
+  formData.append('avatar', file);
 
-    return request('/users/me/avatar', {
-        method: 'POST',
-        body: formData
-    });
+  const response = await api.post('/users/me/avatar', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }).catch(handleApiError);
+
+  return response.data;
 }
 
-export function getUserPosts(username) {
-    return request('/users/' + encodeURIComponent(username) + '/posts');
+export async function getUserPosts(username) {
+  const response = await api.get(
+    '/users/' + encodeURIComponent(username) + '/posts'
+  ).catch(handleApiError);
+
+  return response.data;
 }
 
-export function getUserComments(username) {
-    return request('/users/' + encodeURIComponent(username) + '/comments');
+export async function getUserComments(username) {
+  const response = await api.get(
+    '/users/' + encodeURIComponent(username) + '/comments'
+  ).catch(handleApiError);
+
+  return response.data;
 }
 
 export function imageUrl(path) {
-    if (!path) {
-        return '';
-    }
+  if (!path) {
+    return '';
+  }
 
-    return new URL(path, API_URL).href;
+  return new URL(path, API_URL).href;
 }

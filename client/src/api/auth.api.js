@@ -1,28 +1,38 @@
-const API_URL =
-    import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import api from './axios';
 
-export async function request(path, options = {}) {
-    const token = localStorage.getItem('token');
-    const headers = {};
+export function handleApiError(error) {
+  throw new Error(error.response?.data?.message || error.message);
+}
 
-    if (!(options.body instanceof FormData)) {
-        headers['Content-Type'] = 'application/json';
-    }
+export async function register(username, email, password) {
+  const response = await api.post('/auth/register', {
+    username,
+    email,
+    password
+  }).catch(handleApiError);
 
-    if (token) {
-        headers.Authorization = 'Bearer ' + token;
-    }
+  return response.data;
+}
 
-    const response = await fetch(API_URL + path, {
-        ...options,
-        headers
-    });
+export async function login(email, password) {
+  const response = await api.post('/auth/login', {
+    email,
+    password
+  }).catch(handleApiError);
 
-    const data = await response.json();
+  return response.data;
+}
 
-    if (!response.ok) {
-        throw new Error(data.message || 'Request failed');
-    }
+export async function logout() {
+  const response = await api.post('/auth/logout')
+    .catch(handleApiError);
 
-    return data;
+  return response.data;
+}
+
+export async function getMe() {
+  const response = await api.get('/auth/me')
+    .catch(handleApiError);
+
+  return response.data;
 }

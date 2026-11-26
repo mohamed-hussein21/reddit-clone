@@ -1,86 +1,158 @@
-// Paste this into https://dbdiagram.io to generate the schema diagram (export PNG -> schema.png)
+// Paste into https://dbdiagram.io
+
+
 Table users {
   _id ObjectId [pk]
-  username string [unique]
-  email string [unique]
-  password string
-  displayName string
-  bio string
-  avatar string
-  banner string
-  karma int
+  username varchar [not null, unique]
+  email varchar [not null, unique]
+  password varchar [not null, note: 'select: false']
+  displayName varchar [default: '']
+  bio varchar [default: '']
+  avatar varchar [default: '']
+  banner varchar [default: '']
+  karma number [default: 0]
   createdAt datetime
+  updatedAt datetime
+
+  indexes {
+    (username, displayName) [type: fulltext, name: 'username_displayName_text']
+  }
 }
+
+
 Table communities {
   _id ObjectId [pk]
-  name string [unique]
-  title string
-  description string
-  icon string
-  banner string
-  type string // public | restricted | private
-  creator ObjectId [ref: > users._id] // creator = moderator
-  membersCount int
+  name varchar [not null, unique]
+  title varchar
+  description varchar
+  icon varchar
+  banner varchar
+  type varchar [default: 'public', note: 'public, restricted, private']
+  creator ObjectId [not null]
+  membersCount int [default: 1]
+  rules json [note: 'Array of embedded objects: title and description']
   createdAt datetime
+  updatedAt datetime
+
+  Note: 'Text index on name, title and description'
 }
+
 Table memberships {
   _id ObjectId [pk]
-  user ObjectId [ref: > users._id]
-  community ObjectId [ref: > communities._id]
-  role string // member | moderator
+  user ObjectId [not null]
+  community ObjectId [not null]
+  role varchar [default: 'member', note: 'member or moderator']
   createdAt datetime
-  indexes { (user, community) [unique] }
+  updatedAt datetime
+
+  indexes {
+    (user, community) [unique]
+  }
 }
+
 Table posts {
   _id ObjectId [pk]
-  title string
-  body string
-  type string // text | image | link
-  url string
-  image string
-  author ObjectId [ref: > users._id]
-  community ObjectId [ref: > communities._id]
-  score int
-  upvotes int
-  downvotes int
-  commentsCount int
-  isEdited bool
-  isRemoved bool // removed by moderator
-  isDeleted bool // deleted by author
-  aiSummary string
+  title varchar [not null]
+  body text
+  type varchar [default: 'text', note: 'text, image, link']
+  url varchar
+  image varchar
+  author ObjectId [not null]
+  community ObjectId [not null]
+  score int [default: 0]
+  upvotes int [default: 0]
+  downvotes int [default: 0]
+  commentsCount int [default: 0]
+  isEdited boolean [default: false]
+  isDeleted boolean [default: false]
+  isRemoved boolean [default: false]
+  aiSummary text
   createdAt datetime
+  updatedAt datetime
+
+  indexes {
+    (community, createdAt)
+    (community, score)
+    (createdAt)
+  }
+
+  Note: 'Text index on title and body'
 }
+
 Table comments {
   _id ObjectId [pk]
-  body string
-  author ObjectId [ref: > users._id]
-  post ObjectId [ref: > posts._id]
-  parent ObjectId [ref: > comments._id, null] // null = top level
-  depth int
-  score int
-  isEdited bool
-  isRemoved bool
-  isDeleted bool
+  body text [not null]
+  author ObjectId [not null]
+  post ObjectId [not null]
+  parent ObjectId [note: 'References another comment; null for top-level comments']
+  depth int [default: 0]
+  score int [default: 0]
+  isEdited boolean [default: false]
+  isDeleted boolean [default: false]
+  isRemoved boolean [default: false]
   createdAt datetime
+  updatedAt datetime
+
+  indexes {
+    (post, parent, createdAt)
+  }
 }
+
 Table votes {
   _id ObjectId [pk]
-  user ObjectId [ref: > users._id]
-  target ObjectId // post or comment id
-  targetType string // Post | Comment
-  value int // 1 | -1
-  indexes { (user, target) [unique] }
+  user ObjectId [not null]
+  target ObjectId [not null, note: 'References a Post or Comment']
+  targetType varchar [not null, note: 'Post or Comment']
+  value int [not null, note: '1 = upvote, -1 = downvote']
+  createdAt datetime
+  updatedAt datetime
+
+  indexes {
+    (user, target) [unique]
+  }
+
+  Note: 'Polymorphic reference: targetType determines whether target refers to a Post or Comment'
 }
+
 Table conversations {
   _id ObjectId [pk]
-  participants ObjectId[] [ref: <> users._id]
+  participants ObjectId[] [not null, note: 'Array of User ObjectIds']
   lastMessageAt datetime
+  createdAt datetime
+  updatedAt datetime
+
+  Note: 'Index on participants'
 }
+
 Table messages {
   _id ObjectId [pk]
-  conversation ObjectId [ref: > conversations._id]
-  sender ObjectId [ref: > users._id]
-  text string
-  readBy ObjectId[]
+  conversation ObjectId [not null]
+  sender ObjectId [not null]
+  text text [not null]
+  readBy ObjectId[] [note: 'Array of User ObjectIds who have read the message']
   createdAt datetime
+  updatedAt datetime
+
+  indexes {
+    (conversation, createdAt)
+  }
 }
+
+// Relationships between collections
+
+Ref: communities.creator > users._id
+
+Ref: memberships.user > users._id
+Ref: memberships.community > communities._id
+
+Ref: posts.author > users._id
+Ref: posts.community > communities._id
+
+Ref: comments.author > users._id
+Ref: comments.post > posts._id
+Ref: comments.parent > comments._id
+
+Ref: votes.user > users._id
+
+Ref: messages.conversation > conversations._id
+Ref: messages.sender > users._id

@@ -1,1 +1,18 @@
-// POST / · GET /:name · PATCH /:name · POST /:name/join · DELETE /:name/leave · GET /:name/posts?sort=&page= · DELETE /:id/mod/posts/:postId · DELETE /:id/mod/comments/:commentId
+import { Router } from 'express';
+import {
+  createCommunity,
+  getCommunityByName,
+} from '../controllers/community.controller.js';
+
+import {
+  protect,
+  optionalAuth,
+} from '../middlewares/auth.js';
+
+const router = Router();
+
+router.post('/', protect, createCommunity);
+
+router.get('/:name', optionalAuth, getCommunityByName);
+
+export default router;

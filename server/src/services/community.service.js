@@ -12,7 +12,7 @@ export const createCommunity = async (data, userId) => {
       const [createdCommunity] = await Community.create(
         [
           {
-            name: data.name,
+            name: data.name.toLowerCase(),
             title: data.title,
             description: data.description,
             type: data.type,
@@ -44,7 +44,9 @@ export const createCommunity = async (data, userId) => {
 };
 
 export const getCommunityByName = async (name) => {
-  const community = await Community.findOne({ name });
+  const community = await Community.findOne({
+    name: name.toLowerCase()
+  });
 
   if (!community) {
     const error = new Error('Community not found');
@@ -53,4 +55,11 @@ export const getCommunityByName = async (name) => {
   }
 
   return community;
+};
+
+export const isCommunityMember = async (userId, communityId) => {
+  return await Membership.exists({
+    user: userId,
+    community: communityId,
+  });
 };

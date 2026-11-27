@@ -1,0 +1,141 @@
+.comment-section {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.comment-tree {
+  list-style: none;
+}
+
+/* Replies are indented with a thread line on the left */
+.comment .comment-tree {
+  margin-left: 8px;
+  padding-left: 12px;
+  border-left: 2px solid var(--color-border);
+}
+
+.comment {
+  margin-top: 12px;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.comment-author {
+  font-weight: 600;
+}
+
+.comment-collapse {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.comment-content {
+  margin-left: 24px;
+}
+
+.comment-body {
+  margin: 4px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.comment-actions button {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.comment-actions button:hover {
+  background: var(--color-bg);
+}
+
+.comment-actions button.danger {
+  color: var(--color-primary);
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.comment-form textarea {
+  width: 100%;
+  padding: 8px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  resize: vertical;
+}
+
+.comment-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.comment-error {
+  color: var(--color-primary);
+  font-size: 13px;
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: var(--color-blue);
+  color: #fff;
+  border: none;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: none;
+  color: var(--color-blue);
+  border: 1px solid var(--color-blue);
+}
+
+.btn-danger {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+}

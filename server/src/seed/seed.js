@@ -19,15 +19,103 @@ import Vote from '../models/Vote.js';
 const SEED_EMAIL_DOMAIN = '@seed.test';
 const SEED_PASSWORD = 'password123';
 const USERS_COUNT = 8;
-const POSTS_COUNT = 60;
 const MAX_COMMENTS_PER_POST = 4;
 
 const COMMUNITIES = [
-    { name: 'seed_programming', title: 'Programming', description: 'Code, bugs and everything in between' },
-    { name: 'seed_egypt', title: 'Egypt', description: 'News and talks about Egypt' },
-    { name: 'seed_football', title: 'Football', description: 'Matches, transfers and opinions' },
-    { name: 'seed_movies', title: 'Movies', description: 'Reviews and recommendations' },
-    { name: 'seed_askcollege', title: 'Ask College', description: 'Questions for university students' }
+    {
+        name: 'seed_programming',
+        title: 'Programming',
+        description: 'Code, bugs and everything in between',
+        posts: [
+            ['Is MERN still worth learning in 2026?', 'I am a CS student and I keep hearing mixed opinions. Some say MERN is everywhere, others say companies moved to Next.js and TypeScript. What do you think a junior should focus on?'],
+            ['I spent 3 hours on a bug that was a missing semicolon', 'The error message pointed to a completely different file. When I finally found it I did not know whether to laugh or cry. Please share your worst debugging stories so I feel better.'],
+            ['What is the best way to learn data structures?', 'I understand arrays and linked lists, but trees and graphs feel impossible. Did you learn them from a book, a course, or by solving LeetCode problems?'],
+            ['Tabs or spaces? Our team is fighting about it', 'Half of the team uses tabs and the other half uses spaces, and every pull request is full of formatting changes. Should we just add Prettier and stop arguing?'],
+            ['How do you stay motivated on side projects?', 'I start a new project every month and never finish any of them. How do you keep going after the exciting first week is over?'],
+            ['Explain async and await like I am five', 'I can use them but I do not really understand what happens behind the scenes. Why does my code sometimes run in a different order than I wrote it?'],
+            ['Git saved my project today', 'I deleted a whole folder by mistake and thought I lost a week of work. One git checkout later everything was back. Commit often, people!'],
+            ['Which VS Code extensions do you use every day?', 'I only have Prettier and ESLint. I feel like I am missing a lot of useful tools. What are your must have extensions?']
+        ]
+    },
+    {
+        name: 'seed_egypt',
+        title: 'Egypt',
+        description: 'News and talks about Egypt',
+        posts: [
+            ['Best places to visit in Cairo on a weekend?', 'My cousins are visiting from abroad for two days. Besides the pyramids and the Egyptian Museum, where should I take them?'],
+            ['The traffic on the Ring Road today was crazy', 'It took me two hours to get from Nasr City to Maadi. Is there any app that predicts traffic better than Google Maps here?'],
+            ['What is your favorite koshary place?', 'I have tried a lot of places, but I am still looking for the perfect one. Share your favorite and what makes it special.'],
+            ['Tips for students looking for summer internships', 'I am a third year engineering student. Where do companies in Egypt usually post internships, and when should I start applying?'],
+            ['Is it worth visiting Siwa in winter?', 'I have seen beautiful photos of Siwa Oasis and I am planning a trip with friends. How cold does it get at night, and how many days do we need?'],
+            ['The new metro line made my commute so much easier', 'I used to take two microbuses to get to university. Now it is one train and it is much faster. Anyone else noticed the difference?'],
+            ['What should I bring to Dahab for the first time?', 'I am going diving for the first time next month. Any advice about what to pack and which dive centers are good for beginners?'],
+            ['Recommend Egyptian books for someone who loves history', 'I finished a few books by Naguib Mahfouz and loved them. What should I read next to learn more about modern Egyptian history?']
+        ]
+    },
+    {
+        name: 'seed_football',
+        title: 'Football',
+        description: 'Matches, transfers and opinions',
+        posts: [
+            ['That last minute goal yesterday was unbelievable', 'I had already turned off the TV and my brother started screaming. Best comeback I have seen this season.'],
+            ['Who is the most underrated player in the league right now?', 'Everyone talks about the strikers, but I think the defensive midfielders are doing most of the work. Who do you think deserves more credit?'],
+            ['Should VAR be removed from football?', 'It was supposed to make decisions fair, but now every goal takes five minutes to be confirmed. Is it improving the game or ruining the excitement?'],
+            ['Best football game for playing with friends?', 'We are looking for something fun for a group of four. Is the newest edition worth buying, or should we stick with the old one?'],
+            ['Rate this summer transfer window from 1 to 10', 'Some clubs spent a lot and still look weak, while others made smart cheap signings. Which club did the best business?'],
+            ['How do you improve your stamina for five a side?', 'I play every Friday with my friends and I am tired after ten minutes. Any training routine you recommend?'],
+            ['The atmosphere in the stadium last night was amazing', 'It was my first time watching a match live. The noise, the songs and the flags made it so much better than watching on TV.'],
+            ['Which coach would you bring to the national team?', 'We need someone who can build a team for the long term, not just the next tournament. Who would you choose and why?']
+        ]
+    },
+    {
+        name: 'seed_movies',
+        title: 'Movies',
+        description: 'Reviews and recommendations',
+        posts: [
+            ['Movies with a plot twist you never saw coming', 'I love films that make you want to watch them again right after they end. Please recommend some, but no spoilers in the titles!'],
+            ['Is it just me or are movies getting too long?', 'Almost every new release is close to three hours. Some stories really need it, but many of them could lose forty minutes easily.'],
+            ['Best animated movie of all time?', 'I watched a classic animated film with my little sister and it made me cry more than any drama. Which one is your favorite?'],
+            ['What is a movie that everyone loves but you do not?', 'I know it is a famous classic, but I fell asleep twice while watching it. Share your unpopular opinions here.'],
+            ['Good movies to watch with family this weekend', 'We want something that both kids and adults can enjoy. Comedy or adventure would be great.'],
+            ['Cinema or streaming at home?', 'Tickets and snacks are getting expensive, but the big screen experience is hard to beat. Which one do you prefer for new releases?'],
+            ['Soundtracks that are better than the movie itself', 'Sometimes I listen to a soundtrack for months even though I barely remember the movie. Which soundtracks do you love?'],
+            ['Which book should be turned into a movie next?', 'There are so many great novels that would make amazing films. Which one would you like to see on the big screen?']
+        ]
+    },
+    {
+        name: 'seed_askcollege',
+        title: 'Ask College',
+        description: 'Questions for university students',
+        posts: [
+            ['How do you study for finals without burning out?', 'I have five exams in eight days and I feel overwhelmed already. How do you split your time and when do you take breaks?'],
+            ['Is it normal to feel lost in the first year?', 'Everyone around me seems to know exactly what they want. I am still not sure if I picked the right major.'],
+            ['Best note taking app for engineering students?', 'I need something that handles equations and drawings. Do you use Notion, OneNote, or just paper?'],
+            ['How do you deal with a group project where nobody works?', 'We have a big project due in three weeks and I am the only one who has done anything. Should I talk to the professor?'],
+            ['Is a master degree worth it for software engineers?', 'Some people say experience matters more than degrees. Others say a master opens more doors abroad. What do you think?'],
+            ['What is one thing you wish you knew in your first semester?', 'I am starting university next month. Please share any advice, big or small.'],
+            ['How many hours a day do you actually study?', 'I see people online saying they study ten hours a day. Is that realistic, or is it better to study fewer focused hours?'],
+            ['Tips for giving a good presentation in class', 'I get very nervous when I speak in front of people. How do you prepare so you do not forget everything on the day?']
+        ]
+    }
+];
+
+const COMMENTS = [
+    'This is so true, I had the same experience last year.',
+    'Great question! I have been wondering about this too.',
+    'I disagree a bit. In my opinion it depends on the situation.',
+    'Thanks for sharing, this was really helpful.',
+    'Can you explain more? I did not fully understand.',
+    'Same here! Glad I am not the only one.',
+    'I tried this and it worked perfectly for me.',
+    'Honestly, I think people overthink this.',
+    'Following this thread, I want to know the answer too.',
+    'This made my day, thank you.',
+    'Good point, I never thought about it this way.',
+    'I would recommend starting small and building from there.',
+    'Underrated post. More people need to see this.',
+    'Haha, this happened to me yesterday.',
+    'Do you have any sources for this? I would like to read more.',
+    'Agreed. Consistency matters more than anything.'
 ];
 
 faker.seed(2026); // same fake data every time we run it
@@ -76,7 +164,7 @@ const createUsers = async () => {
 // 3) Communities (first user creates them and is the moderator)
 const createCommunities = async (creator) => {
     return Community.insertMany(
-        COMMUNITIES.map((community) => ({ ...community, creator: creator._id, membersCount: 0 }))
+        COMMUNITIES.map(({ posts: _posts, ...community }) => ({ ...community, creator: creator._id, membersCount: 0 }))
     );
 };
 
@@ -109,17 +197,22 @@ const createMemberships = async (users, communities) => {
 };
 
 // 5) Posts: each post is written by a member of its community
-const createPosts = async (memberships) => {
-    const posts = Array.from({ length: POSTS_COUNT }, () => {
-        const membership = randomItem(memberships);
+const createPosts = async (communities, memberships) => {
+    const posts = [];
 
-        return {
-            title: faker.lorem.sentence({ min: 4, max: 10 }).replace(/\.$/, '?'),
-            body: faker.lorem.paragraphs({ min: 1, max: 3 }),
-            type: 'text',
-            author: membership.user,
-            community: membership.community
-        };
+    COMMUNITIES.forEach((seedCommunity) => {
+        const community = communities.find((c) => c.name === seedCommunity.name);
+        const members = memberships.filter((m) => m.community.equals(community._id));
+
+        seedCommunity.posts.forEach(([title, body]) => {
+            posts.push({
+                title,
+                body,
+                type: 'text',
+                author: randomItem(members).user,
+                community: community._id
+            });
+        });
     });
 
     const created = await Post.insertMany(posts);
@@ -188,7 +281,7 @@ const createComments = async (users, posts) => {
             const parent = comments.length > 0 && Math.random() < 0.4 ? randomItem(comments) : null;
 
             const comment = await Comment.create({
-                body: faker.lorem.sentences({ min: 1, max: 3 }),
+                body: randomItem(COMMENTS),
                 author: randomItem(users)._id,
                 post: post._id,
                 parent: parent ? parent._id : null,
@@ -217,7 +310,7 @@ const seed = async () => {
         const users = await createUsers();
         const communities = await createCommunities(users[0]);
         const memberships = await createMemberships(users, communities);
-        const posts = await createPosts(memberships);
+        const posts = await createPosts(communities, memberships);
         const votes = await createVotes(users, posts);
         const commentsCount = await createComments(users, posts);
 

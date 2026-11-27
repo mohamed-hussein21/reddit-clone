@@ -8,5 +8,8 @@ export const env = {
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
     geminiKey: process.env.GEMINI_API_KEY,
-    openaiKey: process.env.OPENAI_API_KEY
+    openaiKey: process.env.OPENAI_API_KEY,
+    cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+    cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET
 };

@@ -1,4 +1,3 @@
-
 import Post from '../models/Post.js';
 import Community from '../models/Community.js';
 import Membership from '../models/Membership.js';
@@ -85,6 +84,11 @@ export const updatePost = async (post, data, imageFile) => {
 
         post.image = uploadedImage.url;
         post.imagePublicId = uploadedImage.publicId;
+    }
+
+    // The old AI summary no longer matches the edited post
+    if (data.title !== undefined || data.body !== undefined) {
+        post.aiSummary = '';
     }
 
     post.isEdited = true;

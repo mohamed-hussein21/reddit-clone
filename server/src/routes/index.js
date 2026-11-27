@@ -5,6 +5,7 @@ import userRoutes from './user.routes.js';
 import communityRoutes from './community.routes.js';
 import postRoutes from './post.routes.js';
 import commentRoutes from './comment.routes.js';
+import moderationRoutes from './moderation.routes.js';
 // import searchRoutes from './search.routes.js';
 // import chatRoutes from './chat.routes.js';
 
@@ -15,6 +16,7 @@ router.use('/users', userRoutes);
 router.use('/communities', communityRoutes);
 router.use('/posts', postRoutes);
 router.use('/comments', commentRoutes);
+router.use('/communities', moderationRoutes);
 // router.use('/search', searchRoutes);
 // router.use('/chat', chatRoutes);
 

@@ -1,107 +1,132 @@
 import * as userService from '../services/user.service.js';
-import { randomUUID } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
+import {
+  uploadImage,
+  deleteImage
+} from '../services/image.service.js';
 
 export async function getProfile(req, res) {
-    const user = await userService.getProfile(req.params.username);
+  const user = await userService.getProfile(req.params.username);
 
-    if (!user) {
-        return res.status(404).json({
-            message: 'User not found'
-        });
-    }
+  if (!user) {
+    return res.status(404).json({
+      message: 'User not found'
+    });
+  }
 
-    res.json(user);
+  res.json(user);
 }
 
 export async function updateProfile(req, res) {
-    const { displayName, bio } = req.body || {};
-    const data = {};
+  const { displayName, bio } = req.body || {};
+  const data = {};
 
-    if (displayName !== undefined) {
-        if (typeof displayName !== 'string' || displayName.length > 30) {
-            return res.status(400).json({
-                message: 'Display name cannot exceed 30 characters'
-            });
-        }
-
-        data.displayName = displayName.trim();
+  if (displayName !== undefined) {
+    if (typeof displayName !== 'string' || displayName.length > 30) {
+      return res.status(400).json({
+        message: 'Display name cannot exceed 30 characters'
+      });
     }
 
-    if (bio !== undefined) {
-        if (typeof bio !== 'string' || bio.length > 200) {
-            return res.status(400).json({
-                message: 'Bio cannot exceed 200 characters'
-            });
-        }
+    data.displayName = displayName.trim();
+  }
 
-        data.bio = bio.trim();
+  if (bio !== undefined) {
+    if (typeof bio !== 'string' || bio.length > 200) {
+      return res.status(400).json({
+        message: 'Bio cannot exceed 200 characters'
+      });
     }
 
-    const user = await userService.updateProfile(req.user._id, data);
+    data.bio = bio.trim();
+  }
 
-    res.json(user);
+  const user = await userService.updateProfile(req.user._id, data);
+
+  res.json(user);
 }
 
 export async function uploadAvatar(req, res) {
-    if (!req.file) {
-        return res.status(400).json({
-            message: 'Select an image first'
-        });
-    }
+  if (!req.file) {
+    return res.status(400).json({
+      message: 'Select an image first'
+    });
+  }
 
-    const buffer = req.file.buffer;
-    const isPng =
-        buffer.subarray(0, 8).toString('hex') === '89504e470d0a1a0a';
+  const buffer = req.file.buffer;
 
-    const isJpeg =
-        buffer.subarray(0, 3).toString('hex') === 'ffd8ff';
+  const isPng =
+    buffer.subarray(0, 8).toString('hex') === '89504e470d0a1a0a';
 
-    if (!isPng && !isJpeg) {
-        return res.status(400).json({
-            message: 'Invalid image file'
-        });
-    }
+  const isJpeg =
+    buffer.subarray(0, 3).toString('hex') === 'ffd8ff';
 
-    const extension = isPng ? '.png' : '.jpg';
-    const filename = randomUUID() + extension;
+  if (!isPng && !isJpeg) {
+    return res.status(400).json({
+      message: 'Invalid image file'
+    });
+  }
 
-    await mkdir('uploads', { recursive: true });
-    await writeFile('uploads/' + filename, buffer);
+  const oldPublicId = req.user.avatarPublicId;
 
-    const user = await userService.updateProfile(req.user._id, {
-        avatar: '/uploads/' + filename
+  const image = await uploadImage(buffer, 'profiles');
+
+  let user;
+
+  try {
+    user = await userService.updateProfile(req.user._id, {
+      avatar: image.url,
+      avatarPublicId: image.publicId
     });
 
-    res.json(user);
+    if (!user) {
+      const error = new Error('User not found');
+      error.status = 404;
+      throw error;
+    }
+  } catch (error) {
+    await deleteImage(image.publicId).catch(() => {});
+    throw error;
+  }
+
+  if (oldPublicId) {
+    await deleteImage(oldPublicId).catch(() => {
+      console.warn('Could not delete previous avatar');
+    });
+  }
+
+  res.json(user);
 }
 
 export async function getUserPosts(req, res) {
-    const user = await userService.getProfile(req.params.username);
+  const user = await userService.getProfile(req.params.username);
 
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
+  if (!user) {
+    return res.status(404).json({
+      message: 'User not found'
+    });
+  }
 
-    const posts = await userService.getUserPosts(user._id);
+  const posts = await userService.getUserPosts(user._id);
 
-    res.json(posts);
+  res.json(posts);
 }
 
 export async function getUserComments(req, res) {
-    const user = await userService.getProfile(req.params.username);
+  const user = await userService.getProfile(req.params.username);
 
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
+  if (!user) {
+    return res.status(404).json({
+      message: 'User not found'
+    });
+  }
 
-    const comments = await userService.getUserComments(user._id);
+  const comments = await userService.getUserComments(user._id);
 
-    res.json(comments);
+  res.json(comments);
 }
 
 export async function getMyCommunities(req, res) {
-    const communities = await userService.getUserCommunities(req.user._id);
+  const communities = await userService.getUserCommunities(req.user._id);
 
-    res.json(communities);
+  res.json(communities);
 }

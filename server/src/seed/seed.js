@@ -259,7 +259,7 @@ const clearOldSeed = async () => {
   await Community.deleteMany({ _id: { $in: seedCommunities } });
   await User.deleteMany({ _id: { $in: seedUsers } });
 
-  console.log(`🧹 Removed old seed data (${seedUsers.length} users, ${seedPosts.length} posts)`);
+  console.log(` Removed old seed data (${seedUsers.length} users, ${seedPosts.length} posts)`);
 };
 
 // 2) Users
@@ -438,14 +438,14 @@ const seed = async () => {
     const votes = await createVotes(users, posts);
     const commentsCount = await createComments(users, posts);
 
-    console.log('✅ Seed finished:');
+    console.log(' Seed finished:');
     console.log(
       `   ${users.length} users, ${communities.length} communities, ${memberships.length} memberships`
     );
     console.log(`   ${posts.length} posts, ${votes.length} votes, ${commentsCount} comments`);
     console.log(`   Login with any seed user, e.g. user1${SEED_EMAIL_DOMAIN} / ${SEED_PASSWORD}`);
   } catch (error) {
-    console.error('❌ Seed failed:', error);
+    console.error(' Seed failed:', error);
     process.exitCode = 1;
   } finally {
     await mongoose.disconnect();

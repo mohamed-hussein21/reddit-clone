@@ -3,7 +3,7 @@ import { FiTrendingUp } from 'react-icons/fi';
 
 const OPTIONS = [
   { value: 'new', label: 'New', icon: BsStars },
-  { value: 'top', label: 'Top', icon: FiTrendingUp }
+  { value: 'top', label: 'Top', icon: FiTrendingUp },
 ];
 
 // "New / Top" buttons above the posts

@@ -22,7 +22,8 @@ export default function Home() {
         ) : (
           <>
             <div className="feed-banner">
-              <Link to="/login">Log in</Link> to see posts from your communities. Showing popular posts for now.
+              <Link to="/login">Log in</Link> to see posts from your communities. Showing popular
+              posts for now.
             </div>
             <PostList type="popular" />
           </>

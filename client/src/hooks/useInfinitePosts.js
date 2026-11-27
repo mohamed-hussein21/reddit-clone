@@ -11,7 +11,7 @@ export function useInfinitePosts({ type, communityName, sort }) {
       getFeed({ type, communityName, sort, page: pageParam, limit: PAGE_SIZE }),
     initialPageParam: 1,
     // The backend tells us if there is another page
-    getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.page + 1 : undefined)
+    getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.page + 1 : undefined),
   });
 
   // pages = [{ posts: [...] }, { posts: [...] }] -> one flat list

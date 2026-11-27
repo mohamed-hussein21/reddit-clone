@@ -1,6 +1,5 @@
 import * as communityService from '../services/community.service.js';
 import { createCommunitySchema } from '../validators/community.validator.js';
-import Membership from '../models/Membership.js';
 
 export const createCommunity = async (req, res, next) => {
   try {
@@ -32,10 +31,10 @@ export const getCommunityByName = async (req, res, next) => {
 
     if (community.type === 'private') {
       const membership = req.user
-        ? await Membership.exists({
-            user: req.user._id,
-            community: community._id,
-          })
+        ? await communityService.isCommunityMember(
+            req.user._id,
+            community._id
+          )
         : null;
 
       if (!membership) {

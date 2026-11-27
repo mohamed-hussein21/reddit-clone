@@ -1,6 +1,8 @@
 import Post from '../models/Post.js';
 import Comment from '../models/Comment.js';
 import { ApiError } from '../utils/ApiError.js';
+import Community from '../models/Community.js';
+import Membership from '../models/Membership.js';
 
 // Moderator removes a post from their community
 export async function removePost(community, postId) {
@@ -33,4 +35,20 @@ export async function removeComment(community, commentId) {
   if (wasVisible) {
     await Post.updateOne({ _id: comment.post._id }, { $inc: { commentsCount: -1 } });
   }
+}
+
+// Public list of the moderators of a community (for the sidebar,
+// and so the frontend knows who can see the Remove buttons)
+export async function getModerators(communityId) {
+  const exists = await Community.exists({ _id: communityId });
+
+  if (!exists) {
+    throw new ApiError(404, 'Community not found');
+  }
+
+  const memberships = await Membership.find({ community: communityId, role: 'moderator' })
+    .populate('user', 'username displayName avatar')
+    .lean();
+
+  return memberships.map((membership) => membership.user).filter(Boolean);
 }

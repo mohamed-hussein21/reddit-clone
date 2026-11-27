@@ -21,3 +21,14 @@ export async function removeComment(req, res, next) {
     next(error);
   }
 }
+
+// GET /api/communities/:id/moderators
+export async function getModerators(req, res, next) {
+  try {
+    const moderators = await moderationService.getModerators(req.params.id);
+
+    res.json(moderators);
+  } catch (error) {
+    next(error);
+  }
+}

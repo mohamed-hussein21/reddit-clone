@@ -69,9 +69,16 @@ export const getPostById = async (postId) => {
 export const updatePost = async (post, data, imageFile) => {
     const allowedFields = ['title', 'body', 'type', 'url'];
 
+    const contentChanged =
+        (data.title !== undefined && data.title !== post.title) ||
+        (data.body !== undefined && data.body !== post.body);
+
+    let hasChanges = false;
+
     allowedFields.forEach((field) => {
-        if (data[field] !== undefined) {
+        if (data[field] !== undefined && data[field] !== post[field]) {
             post[field] = data[field];
+            hasChanges = true;
         }
     });
 
@@ -84,14 +91,16 @@ export const updatePost = async (post, data, imageFile) => {
 
         post.image = uploadedImage.url;
         post.imagePublicId = uploadedImage.publicId;
+        hasChanges = true;
     }
 
-    // The old AI summary no longer matches the edited post
-    if (data.title !== undefined || data.body !== undefined) {
+    if (contentChanged) {
         post.aiSummary = '';
     }
 
-    post.isEdited = true;
+    if (hasChanges) {
+        post.isEdited = true;
+    }
 
     await post.save();
 

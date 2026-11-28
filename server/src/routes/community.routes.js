@@ -7,6 +7,7 @@ import {
   getPendingJoinRequests,
   reviewJoinRequest,
 } from '../controllers/community.controller.js';
+import { getCommunityFeed } from '../controllers/feed.controller.js'; // Feed
 
 import {
   protect,
@@ -20,6 +21,7 @@ const router = Router();
 router.post('/', protect, createCommunity);
 
 router.get('/:name', optionalAuth, getCommunityByName);
+router.get('/:name/posts', optionalAuth, getCommunityFeed); // Feed
 
 router.post('/:name/join', protect, joinCommunity);
 

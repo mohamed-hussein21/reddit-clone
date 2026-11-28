@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import Community from '../models/Community.js';
 import Membership from '../models/Membership.js';
 import JoinRequest from '../models/JoinRequest.js';
+import { ApiError } from '../utils/ApiError.js';
 
 export const createCommunity = async (data, userId) => {
   const session = await mongoose.startSession();
@@ -50,9 +51,7 @@ export const getCommunityByName = async (name) => {
   });
 
   if (!community) {
-    const error = new Error('Community not found');
-    error.statusCode = 404;
-    throw error;
+    throw new ApiError(404, 'Community not found');
   }
 
   return community;
@@ -77,9 +76,7 @@ export const joinCommunity = async (name, userId) => {
       }).session(session);
 
       if (!community) {
-        const error = new Error('Community not found');
-        error.statusCode = 404;
-        throw error;
+        throw new ApiError(404, 'Community not found');
       }
 
       const membership = await Membership.exists({
@@ -88,9 +85,7 @@ export const joinCommunity = async (name, userId) => {
       }).session(session);
 
       if (membership) {
-        const error = new Error('You are already a member');
-        error.statusCode = 409;
-        throw error;
+        throw new ApiError(409, 'You are already a member');
       }
 
       if (community.type === 'private') {
@@ -101,11 +96,10 @@ export const joinCommunity = async (name, userId) => {
         }).session(session);
 
         if (existingRequest) {
-          const error = new Error(
+          throw new ApiError(
+            409,
             'You already have a pending join request'
           );
-          error.statusCode = 409;
-          throw error;
         }
 
         const [joinRequest] = await JoinRequest.create(
@@ -168,9 +162,7 @@ export const leaveCommunity = async (name, userId) => {
       }).session(session);
 
       if (!community) {
-        const error = new Error('Community not found');
-        error.statusCode = 404;
-        throw error;
+        throw new ApiError(404, 'Community not found');
       }
 
       const membership = await Membership.findOne({
@@ -179,17 +171,14 @@ export const leaveCommunity = async (name, userId) => {
       }).session(session);
 
       if (!membership) {
-        const error = new Error('You are not a member');
-        error.statusCode = 409;
-        throw error;
+        throw new ApiError(409, 'You are not a member');
       }
 
       if (community.creator.equals(userId)) {
-        const error = new Error(
+        throw new ApiError(
+          403,
           'Transfer ownership before leaving the community'
         );
-        error.statusCode = 403;
-        throw error;
       }
 
       if (membership.role === 'moderator') {
@@ -199,18 +188,15 @@ export const leaveCommunity = async (name, userId) => {
         }).session(session);
 
         if (moderatorsCount <= 1) {
-          const error = new Error(
+          throw new ApiError(
+            403,
             'Assign another moderator before leaving'
           );
-          error.statusCode = 403;
-          throw error;
         }
       }
 
       if (community.membersCount <= 0) {
-        const error = new Error('Invalid members count');
-        error.statusCode = 409;
-        throw error;
+        throw new ApiError(409, 'Invalid members count');
       }
 
       await Membership.deleteOne(
@@ -249,15 +235,11 @@ export const reviewJoinRequest = async (
   status
 ) => {
   if (!mongoose.isValidObjectId(requestId)) {
-    const error = new Error('Invalid request id');
-    error.statusCode = 400;
-    throw error;
+    throw new ApiError(400, 'Invalid request id');
   }
 
   if (!['approved', 'rejected'].includes(status)) {
-    const error = new Error('Invalid request status');
-    error.statusCode = 400;
-    throw error;
+    throw new ApiError(400, 'Invalid request status');
   }
 
   const session = await mongoose.startSession();
@@ -273,9 +255,7 @@ export const reviewJoinRequest = async (
       }).session(session);
 
       if (!moderator) {
-        const error = new Error('Only moderators can do this');
-        error.statusCode = 403;
-        throw error;
+        throw new ApiError(403, 'Only moderators can do this');
       }
 
       const joinRequest = await JoinRequest.findOne({
@@ -284,15 +264,11 @@ export const reviewJoinRequest = async (
       }).session(session);
 
       if (!joinRequest) {
-        const error = new Error('Join request not found');
-        error.statusCode = 404;
-        throw error;
+        throw new ApiError(404, 'Join request not found');
       }
 
       if (joinRequest.status !== 'pending') {
-        const error = new Error('Join request already reviewed');
-        error.statusCode = 409;
-        throw error;
+        throw new ApiError(409, 'Join request already reviewed');
       }
 
       if (status === 'approved') {
@@ -302,9 +278,7 @@ export const reviewJoinRequest = async (
         }).session(session);
 
         if (membership) {
-          const error = new Error('User is already a member');
-          error.statusCode = 409;
-          throw error;
+          throw new ApiError(409, 'User is already a member');
         }
 
         await Membership.create(
@@ -325,9 +299,7 @@ export const reviewJoinRequest = async (
         );
 
         if (!community) {
-          const error = new Error('Community not found');
-          error.statusCode = 404;
-          throw error;
+          throw new ApiError(404, 'Community not found');
         }
       }
 

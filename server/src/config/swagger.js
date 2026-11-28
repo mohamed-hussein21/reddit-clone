@@ -15,7 +15,7 @@ export const swaggerSpec = swaggerJsdoc({
   },
 
   apis: [
-  path.join(__dirname, '../docs/*.yaml').split(path.sep).join('/'),
-  path.join(__dirname, '../routes/*.js').split(path.sep).join('/'),
+     path.join(__dirname, '../docs/*.yaml').split(path.sep).join('/'),
+     path.join(__dirname, '../routes/*.js').split(path.sep).join('/'),
   ],
 });

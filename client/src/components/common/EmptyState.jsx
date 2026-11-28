@@ -1,4 +1,3 @@
-// Reusable EmptyState
-export default function EmptyState() {
-  return <div>EmptyState</div>;
+export default function EmptyState(props) {
+  return <div className="empty-state">{props.message}</div>;
 }

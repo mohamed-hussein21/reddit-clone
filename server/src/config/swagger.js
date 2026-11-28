@@ -13,5 +13,9 @@ export const swaggerSpec = swaggerJsdoc({
       securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' } },
     },
   },
-  apis: [path.join(__dirname, '../docs/*.yaml'), path.join(__dirname, '../routes/*.js')],
+
+  apis: [
+  path.join(__dirname, '../docs/*.yaml').split(path.sep).join('/'),
+  path.join(__dirname, '../routes/*.js').split(path.sep).join('/'),
+  ],
 });

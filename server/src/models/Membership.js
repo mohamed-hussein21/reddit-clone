@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 
 const membershipSchema = new mongoose.Schema(
@@ -18,7 +17,8 @@ const membershipSchema = new mongoose.Schema(
         role: {
             type: String,
             enum: ['member', 'moderator'],
-            default: 'member'
+            default: 'member',
+            required: true
         }
     },
     {
@@ -26,10 +26,13 @@ const membershipSchema = new mongoose.Schema(
     }
 );
 
-// A user can join a community only once
 membershipSchema.index(
     { user: 1, community: 1 },
     { unique: true }
+);
+
+membershipSchema.index(
+    { community: 1, role: 1 }
 );
 
 const Membership = mongoose.model('Membership', membershipSchema);

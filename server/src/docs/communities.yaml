@@ -1,1 +1,207 @@
-# OpenAPI paths for /communities  (picked up automatically by swagger-jsdoc)
+paths:
+  /communities:
+    post:
+      tags:
+        - Communities
+      summary: Create a new community
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  minLength: 3
+                  maxLength: 21
+                  pattern: '^[A-Za-z0-9_]+$'
+                  example: programming
+                title:
+                  type: string
+                  example: Programming Community
+                description:
+                  type: string
+                  maxLength: 500
+                  example: A community for programmers
+                type:
+                  type: string
+                  enum:
+                    - public
+                    - restricted
+                    - private
+                  default: public
+      responses:
+        '201':
+          description: Community created successfully
+        '400':
+          description: Invalid community data
+        '401':
+          description: Unauthorized
+        '409':
+          description: Community name already exists
+
+  /communities/{name}:
+    get:
+      tags:
+        - Communities
+      summary: Get community by name
+      security:
+        - {}
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+          example: programming
+      responses:
+        '200':
+          description: Community retrieved successfully
+        '403':
+          description: This community is private
+        '404':
+          description: Community not found
+
+  /communities/{name}/join:
+    post:
+      tags:
+        - Communities
+      summary: Join a community or submit a join request
+      description: >
+        Public and restricted communities can be joined directly.
+        Private communities require moderator approval.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+          example: programming
+      responses:
+        '200':
+          description: Community joined successfully
+        '202':
+          description: Join request submitted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Community not found
+        '409':
+          description: Already a member or pending request exists
+
+  /communities/{name}/leave:
+    post:
+      tags:
+        - Communities
+      summary: Leave a community
+      description: >
+        The community owner must transfer ownership before leaving.
+        The last moderator cannot leave without assigning another moderator.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+          example: programming
+      responses:
+        '200':
+          description: Community left successfully
+        '401':
+          description: Unauthorized
+        '403':
+          description: Ownership transfer or another moderator required
+        '404':
+          description: Community not found
+        '409':
+          description: User is not a member or members count is invalid
+
+  /communities/{id}/requests:
+    get:
+      tags:
+        - Communities
+      summary: Get pending join requests
+      description: Only community moderators can view pending requests.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Community ID
+      responses:
+        '200':
+          description: Pending join requests retrieved successfully
+        '400':
+          description: Invalid community ID
+        '401':
+          description: Unauthorized
+        '403':
+          description: Only moderators can view requests
+        '404':
+          description: Community not found
+
+  /communities/{id}/requests/{requestId}:
+    patch:
+      tags:
+        - Communities
+      summary: Approve or reject a join request
+      description: >
+        Only community moderators can review pending requests.
+        Approval creates a membership and increases membersCount.
+        Rejection does not create a membership.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Community ID
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+          description: Join request ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - approved
+                    - rejected
+                  example: approved
+      responses:
+        '200':
+          description: Join request reviewed successfully
+        '400':
+          description: Invalid ID or request status
+        '401':
+          description: Unauthorized
+        '403':
+          description: Only moderators can review requests
+        '404':
+          description: Community or join request not found
+        '409':
+          description: Request already reviewed or user already a member

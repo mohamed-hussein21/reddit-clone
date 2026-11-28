@@ -14,3 +14,7 @@ export const createCommunitySchema = z.object({
   type: z.enum(['public', 'restricted', 'private'])
     .default('public'),
 });
+
+export const reviewJoinRequestSchema = z.object({
+  status: z.enum(['approved', 'rejected']),
+});

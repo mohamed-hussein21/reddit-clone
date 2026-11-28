@@ -6,9 +6,11 @@ export default function Layout() {
   return (
     <>
       <Navbar />
-      <div style={{ display: 'flex', paddingTop: 'var(--navbar-height)' }}>
+
+      <div className="app-layout">
         <LeftSidebar />
-        <main style={{ flex: 1 }}>
+
+        <main className="page-content">
           <Outlet />
         </main>
       </div>

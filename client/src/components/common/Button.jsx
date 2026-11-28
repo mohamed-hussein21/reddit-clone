@@ -1,4 +1,8 @@
-// Reusable Button
-export default function Button() {
-  return <div>Button</div>;
+import './Button.css';
+export default function Button(props) {
+  return (
+    <button className="button" onClick={props.onClick}>
+      {props.text}
+    </button>
+  );
 }

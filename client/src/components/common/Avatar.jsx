@@ -1,4 +1,3 @@
-// Reusable Avatar
-export default function Avatar() {
-  return <div>Avatar</div>;
+export default function Avatar(props) {
+  return <img className="avatar" src={props.src} alt={props.name} />;
 }

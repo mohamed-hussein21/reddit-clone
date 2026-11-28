@@ -8,6 +8,7 @@ const communitySchema = new mongoose.Schema(
             required: true,
             unique: true,
             trim: true,
+            lowercase: true,
             minlength: 3,
             maxlength: 21,
             match: /^[A-Za-z0-9_]+$/
@@ -49,7 +50,8 @@ const communitySchema = new mongoose.Schema(
 
         membersCount: {
             type: Number,
-            default: 1
+            default: 1,
+            min: 0
         },
 
         rules: [

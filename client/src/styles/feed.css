@@ -1,0 +1,184 @@
+/* ===== Feed page layout ===== */
+.feed-page {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 24px;
+}
+
+.feed-main {
+  width: 100%;
+  max-width: 640px;
+}
+
+.feed-title {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.feed-banner {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.feed-banner a {
+  color: var(--color-blue);
+  font-weight: 600;
+}
+
+.feed-status {
+  padding: 16px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.feed-error {
+  color: var(--color-primary);
+}
+
+/* ===== Sort bar ===== */
+.sort-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.sort-btn:hover {
+  background: var(--color-bg);
+}
+
+.sort-btn.active {
+  background: var(--color-bg);
+  color: var(--color-blue);
+}
+
+/* ===== Temporary post card (until PostCard is ready) ===== */
+.post-preview {
+  display: flex;
+  margin-bottom: 10px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.post-preview:hover {
+  border-color: var(--color-text-muted);
+}
+
+.post-preview-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 44px;
+  padding: 8px 0;
+  background: var(--color-bg);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.post-preview-content {
+  flex: 1;
+  padding: 8px 12px;
+}
+
+.post-preview-meta {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.post-preview-community {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.post-preview-title {
+  margin: 6px 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.post-preview-comments {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+/* ===== AI summary ===== */
+.ai-summary {
+  margin: 12px 0;
+}
+
+.ai-summary-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--color-blue);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--color-blue);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.ai-summary-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.ai-summary-box {
+  padding: 12px;
+  border-left: 3px solid var(--color-blue);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ai-summary-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-weight: 700;
+  color: var(--color-blue);
+}
+
+.ai-summary-error,
+.ai-summary-hint {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.ai-summary-error {
+  color: var(--color-primary);
+}
